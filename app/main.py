@@ -1,7 +1,7 @@
 import os
 import logging
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from tools.reader import extractor_agent
+from app.tools.reader import extractor_agent
 
 # ------------------------
 # Logging
