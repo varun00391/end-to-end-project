@@ -1,41 +1,65 @@
 import os
+import logging
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from tools.reader import extractor_agent
 
+# ------------------------
+# Logging
+# ------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+)
+logger = logging.getLogger("pdf-api")
+
+# ------------------------
+# App
+# ------------------------
 app = FastAPI(title="PDF Extractor API")
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-@app.get("/")
+@app.get("/health")
 def health_check():
-    return {"status": "PDF Extractor API is running"}
+    return {"status": "ok"}
 
 
 @app.post("/extract")
 async def extract_pdf(file: UploadFile = File(...)):
-    #  Validate file type
+    logger.info(f"Received file upload: {file.filename}")
+
+    # Validate file type
     if not file.filename.lower().endswith(".pdf"):
+        logger.warning(f"Invalid file type: {file.filename}")
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
 
-    # Save uploaded file temporarily
     file_path = os.path.join(UPLOAD_DIR, file.filename)
 
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
     try:
-        # Call your extractor agent
-        extracted_text = extractor_agent(file_path)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        # 4Optional cleanup
-        os.remove(file_path)
+        # Save file
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
 
-    # Return response
-    return {
-        "file_name": file.filename,
-        "extracted_text": extracted_text
-    }
+        logger.info(f"File saved temporarily: {file_path}")
+
+        # Extract
+        extracted_text = extractor_agent(file_path)
+
+        logger.info(f"Extraction successful: {file.filename}")
+
+        return {
+            "file_name": file.filename,
+            "extracted_text": extracted_text
+        }
+
+    except Exception as e:
+        logger.exception("PDF extraction failed")
+        raise HTTPException(status_code=500, detail="PDF processing failed")
+
+    finally:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            logger.info(f"Temporary file removed: {file_path}")
+
