@@ -1,4 +1,5 @@
 pandas
 numpy
 pymupdf
-fpdf2
+uvicorn
+fastapi
