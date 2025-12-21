@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  pdf-extractor:
+    build: .
+    container_name: pdf_extractor_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
