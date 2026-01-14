@@ -1,0 +1,22 @@
+groups:
+  - name: fastapi-alerts
+    rules:
+      - alert: FastAPIDown
+        expr: up{job="fastapi"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "FastAPI service is DOWN"
+
+      - alert: HighLatencyP95
+        expr: histogram_quantile(
+                0.95,
+                rate(http_request_latency_seconds_bucket[5m])
+              ) > 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API latency (p95 > 1s)"
+
