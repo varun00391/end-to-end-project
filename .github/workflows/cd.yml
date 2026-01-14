@@ -18,9 +18,12 @@ jobs:
           key: ${{ secrets.AZURE_SSH_KEY }}
 
           script: |
-            echo "SSH WORKS"
+            echo "SSH CONNECTED FROM GITHUB ACTIONS"
             whoami
             hostname
+            pwd
+
+
 
 
           # script: |   # ✅ FIXED (singular)
