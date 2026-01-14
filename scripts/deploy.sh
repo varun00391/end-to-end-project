@@ -59,7 +59,19 @@ docker-compose up -d
 # HEALTH CHECK 
 #----------------------------
 
-echo "[5/5] Checking application health... "
-curl -f http://localhost/health
+echo "Waiting for application to become healthy..."
+
+for i in {1..10}; do
+  if curl -sf http://localhost/health; then
+    echo "Application is healthy"
+    exit 0
+  fi
+  echo "Not ready yet... retrying ($i/10)"
+  sleep 5
+done
+
+echo "Application failed health check"
+exit 1
+
 
 echo "Deployment completed successfully"
