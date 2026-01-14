@@ -22,7 +22,7 @@ logger = logging.getLogger("pdf-api")
 # ------------------------
 # App
 # ------------------------
-app = FastAPI(title="Neww PDF Extractor API")
+app = FastAPI(title="Newww PDF Extractor API")
 
 
 UPLOAD_DIR = "uploads"
