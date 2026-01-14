@@ -17,33 +17,6 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_SSH_KEY }}
 
-          scripts: |
+          script: |   # ✅ FIXED (singular)
             cd end-to-end-project
             ./scripts/deploy.sh
-
-          # script: |
-          #   set -e
-
-          #   echo "Changing to project directory"
-          #   cd end-to-end-project
-
-          #   echo "Fetching latest code"
-          #   git fetch origin
-          #   git reset --hard origin/test_branch
-
-          #   echo "Stopping old containers"
-          #   docker-compose down
-
-          #   echo "Building fresh image (no cache)"
-          #   docker-compose build --no-cache
-
-          #   echo "Starting containers"
-          #   docker-compose up -d
-
-          #   echo "Verifying application"
-          #   curl http://localhost/health
-
-            
-
-
-
