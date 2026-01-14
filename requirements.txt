@@ -1,0 +1,9 @@
+pandas
+numpy
+pymupdf
+uvicorn
+fastapi
+python-multipart
+pytest
+httpx
+prometheus-client

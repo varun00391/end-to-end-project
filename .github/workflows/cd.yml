@@ -16,8 +16,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_HOST }}
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_SSH_KEY }}
-          script: |
+
+          script: |   # ✅ FIXED (singular)
             cd end-to-end-project
-            git pull
-            docker compose up -d --build
-            curl http://localhost/health
+            ./scripts/deploy.sh
