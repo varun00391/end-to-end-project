@@ -16,16 +16,6 @@ jobs:
           host: ${{ secrets.AZURE_VM_HOST }}
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_SSH_KEY }}
-
           script: |
-            echo "SSH CONNECTED FROM GITHUB ACTIONS"
-            whoami
-            hostname
-            pwd
-
-
-
-
-          # script: |   # ✅ FIXED (singular)
-          #   cd end-to-end-project
-          #   ./scripts/deploy.sh
+            cd end-to-end-project
+            ./scripts/deploy.sh
