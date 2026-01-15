@@ -7,7 +7,6 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-# PROJECT_DIR="$HOME/end-to-end-project"
 BRANCH="test_branch"
 APP_NAME="FastAPI"
 
@@ -20,7 +19,7 @@ echo "=========================="
 #-------------------------------
 
 if [ ! -d "$PROJECT_DIR" ]; then
-   echo " Project directory not found: $PROJECT_DIR"
+   echo "❌ Project directory not found: $PROJECT_DIR"
    exit 1
 fi 
 
@@ -39,39 +38,36 @@ git reset --hard origin/$BRANCH
 #------------------------------
 
 echo "[2/5] Stopping existing containers..."
-docker-compose down
+docker compose down || true
 
 #-----------------------------
 # Build Fresh Image
 #-----------------------------
 
 echo "[3/5] Building docker image (no cache)..."
-docker-compose build --no-cache
+docker compose build --no-cache
 
 #-----------------------------
 # Starting Containers
 #-----------------------------
 
-echo "[4/5] Starting containers.."
-docker-compose up -d
+echo "[4/5] Starting containers..."
+docker compose up -d
 
 #----------------------------
 # HEALTH CHECK 
 #----------------------------
 
-echo "Waiting for application to become healthy..."
+echo "[5/5] Waiting for application to become healthy..."
 
 for i in {1..10}; do
-  if curl -sf http://localhost/health; then
-    echo "Application is healthy"
+  if curl -sf http://localhost/health > /dev/null; then
+    echo "✅ Application is healthy"
     exit 0
   fi
-  echo "Not ready yet... retrying ($i/10)"
+  echo "⏳ Not ready yet... retrying ($i/10)"
   sleep 5
 done
 
-echo "Application failed health check"
+echo "❌ Application failed health check"
 exit 1
-
-
-echo "Deployment completed successfully"
