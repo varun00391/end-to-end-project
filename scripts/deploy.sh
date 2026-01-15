@@ -52,7 +52,7 @@ docker-compose build --no-cache
 # Starting Containers
 #-----------------------------
 
-echo "[4/5] Starting containers..."
+echo "[4/5] Starting containers.."
 docker-compose up -d
 
 #----------------------------
