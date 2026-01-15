@@ -27,15 +27,19 @@ docker compose up -d
 
 echo "[5/5] Waiting for application to become healthy..."
 
-for i in {1..20}; do
-  if curl -sf http://localhost:8000/health > /dev/null; then
+for i in {1..30}; do
+  echo "⏳ Checking health ($i/30)..."
+  docker logs pdf_extractor_api --tail=5 || true
+
+  if curl -s http://127.0.0.1:8000/health | grep -q ok; then
     echo "✅ Application is healthy"
     exit 0
   fi
-  echo "⏳ Not ready yet... retrying ($i/20)"
+
   sleep 5
 done
 
 echo "❌ Application failed health check"
-docker compose logs
+docker logs pdf_extractor_api
 exit 1
+
